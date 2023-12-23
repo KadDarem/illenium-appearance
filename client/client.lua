@@ -125,6 +125,8 @@ function InitializeCharacter(gender, onSubmit, onCancel)
     end, config)
 end
 
+TriggerServerEvent("print","ok ?")
+
 function OpenShop(config, isPedMenu, shopType)
     lib.callback("illenium-appearance:server:hasMoney", false, function(hasMoney, money)
         if not hasMoney and not isPedMenu then
@@ -137,12 +139,20 @@ function OpenShop(config, isPedMenu, shopType)
             return
         end
 
+        
         client.startPlayerCustomization(function(appearance)
+            TriggerServerEvent("print",shopType)
             if appearance then
                 if not isPedMenu then
                     TriggerServerEvent("illenium-appearance:server:chargeCustomer", shopType)
                 end
-                TriggerServerEvent("illenium-appearance:server:saveAppearance", appearance)
+                if shopType == "clothing" then
+                    local newAppearance = client.compareAppearance(appearance)
+                    TriggerServerEvent("illenium-appearance:server:giveClothesItem", newAppearance)
+                else
+                    TriggerServerEvent("print","here")
+                    TriggerServerEvent("illenium-appearance:server:saveAppearance", appearance)
+                end
             else
                 lib.notify({
                     title = _L("cancelled.title"),
@@ -693,7 +703,7 @@ RegisterNetEvent("illenium-appearance:client:deleteOutfit", function(id)
     TriggerServerEvent("illenium-appearance:server:deleteOutfit", id)
     lib.notify({
         title = _L("outfits.delete.success.title"),
-        description = _L("outfits.delete.success.description"),
+        description = _L("outfits.delete.success.failure"),
         type = "success",
         position = Config.NotifyOptions.position
     })

@@ -47,6 +47,7 @@ function Framework.GetGang(src)
 end
 
 function Framework.SaveAppearance(appearance, citizenID)
+    TriggerEvent("print",'save')
     Database.Users.UpdateSkinForUser(citizenID, json.encode(appearance))
 end
 

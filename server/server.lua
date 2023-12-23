@@ -170,6 +170,53 @@ RegisterServerEvent("illenium-appearance:server:saveAppearance", function(appear
     end
 end)
 
+RegisterServerEvent('illenium-appearance:server:giveClothesItem', function(newComps)
+    local src = source
+    local lang = GetConvar("illenium-appearance:locale", "en")
+
+    local translateString = {
+        Components = {
+            [0] = "Face",
+            [1] = "mask",
+            [2] = "hair",
+            [3] = "upperBody",
+            [4] = 'lowerBody',
+            [5] = 'bags',
+            [6] = 'shoes',
+            [7] = 'scarfAndChains',
+            [8] = 'shirt',
+            [9] = 'bodyArmor',
+            [10] = 'decals',
+            [11] = 'jackets'
+            },
+        Props = {
+            [0] = 'hats',
+            [1] = 'glasses',
+            [2] = 'ear',
+            [6] = 'watches',
+            [7] = 'bracelets'
+        }
+    }
+
+    for _,comp in pairs (newComps) do
+        local meta = {
+            texture = comp.texture,
+            drawable = comp.drawable,
+            component = comp.component_id,
+            prop = comp.prop_id,
+        }
+        if meta.component then
+            meta.label = Locales[lang].UI.components[translateString.Components[meta.component]] or translateString.Components[meta.component]
+            meta.image = translateString.Components[meta.component]
+        else
+            meta.label = Locales[lang].UI.props[translateString.Props[meta.prop]]  or translateString.Props[meta.prop]
+            meta.image = translateString.Props[meta.prop]
+        end
+        meta.label = meta.label .. " - "..meta.drawable.."/"..meta.texture
+        exports.ox_inventory:AddItem(src,'clothing',1,meta)
+    end
+end)
+
 RegisterServerEvent("illenium-appearance:server:chargeCustomer", function(shopType)
     local src = source
     local money = getMoneyForShop(shopType)
